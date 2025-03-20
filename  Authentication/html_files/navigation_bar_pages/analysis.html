@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Analysis</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        /* Basic Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        /* Header */
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #0056b3;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+            padding: 10px;
+        }
+
+        nav a:hover {
+            background-color: #003f7f;
+            border-radius: 5px;
+        }
+
+        /* Profile Info */
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .profile-info img {
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+        }
+
+        /* Main Section */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* Search Box */
+        input {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        /* Table */
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            background-color: #1e1e1e;
+            color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        td a {
+            color: white;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        tr:hover {
+            background-color: #333;
+        }
+    </style>
+
+    <!-- Firebase Authentication -->
+    <script type="module">
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBKzklTetliRIv9UunBkZ-JfqV5mQnf3PU",
+            authDomain: "login-form-784b8.firebaseapp.com",
+            projectId: "login-form-784b8",
+            storageBucket: "login-form-784b8.firebasestorage.app",
+            messagingSenderId: "444698526985",
+            appId: "1:444698526985:web:c032a38d5cd43af9cbbfd8"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+
+        // Display user info in the navigation bar
+        function displayUserInfo(user) {
+            if (user) {
+                document.getElementById('profilePic').src = user.photoURL || '../user_icon.png';
+                document.getElementById('userEmailNav').textContent = user.email;
+            } else {
+                window.location.href = '../../index.html';
+            }
+        }
+
+        // Check if user is signed in
+        auth.onAuthStateChanged(user => displayUserInfo(user));
+
+        // Sign out functionality
+        function signOut() {
+            auth.signOut().then(() => {
+                window.location.href = '../../index.html';
+            }).catch(error => {
+                console.error('Error signing out: ', error);
+            });
+        }
+
+        window.onload = () => {
+            document.getElementById('signOutButton').addEventListener('click', signOut);
+        };
+    </script>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav>
+    <div>
+        <a href="../homepage1.html">Home</a>
+        <a href="../profile.html">Profile</a>
+        <a href="analysis.html">Analysis</a>
+        <a href="#">News</a>
+    </div>
+    <div class="profile-info">
+        <!-- Profile Pic -->
+        <img id="profilePic" src="default-avatar.png" alt="Profile Picture">
+        <!-- User Email -->
+        <span id="userEmailNav"></span>
+        <!-- Sign Out Button -->
+        <a href="javascript:void(0)" id="signOutButton">Sign Out</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main>
+    <h1>List of Companies</h1>
+    <input type="text" id="search" onkeyup="searchTable()" placeholder="Search for companies...">
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sr.No</th>
+                <th>Company Name</th>
+            </tr>
+        </thead>
+        <tbody id="company-list">
+            <tr><td>1</td><td><a href="comapany_list/tata_moters.html">Tata Motors Ltd.</a></td></tr>
+            <tr><td>2</td><td><a href="comapany_list/nestle_india.html">Nestle India Ltd.</a></td></tr>
+            <tr><td>3</td><td><a href="comapany_list/tata_steel.html">Tata Steel Ltd.</a></td></tr>
+            <tr><td>4</td><td><a href="comapany_list/ultratech_cement.html">UltraTech Cement Ltd.</a></td></tr>
+            <tr><td>5</td><td><a href="comapany_list/relience.html">Reliance Industries Ltd.</a></td></tr>
+            <tr><td>6</td><td><a href="comapany_list/l&t.html">Larsen & Toubro Ltd.</a></td></tr>
+            <tr><td>7</td><td><a href="comapany_list/kotak_bank.html">Kotak Mahindra bank Ltd.</a></td></tr>
+            <tr><td>9</td><td><a href="comapany_list/itc.html">ITC Ltd.</a></td></tr>
+            <tr><td>10</td><td><a href="comapany_list/infosys.html">Infosys Ltd.</a></td></tr>
+            <tr><td>11</td><td><a href="comapany_list/hdfc.html">HDFC Bank Ltd. </a></td></tr>
+            <tr><td>12</td><td><a href="comapany_list/airtel.html"> Bharti Airtel Ltd.</a></td></tr>
+        </tbody>
+    </table>
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Company Analysis. All rights reserved.</p>
+</footer>
+
+<script>
+    function searchTable() {
+        let input = document.getElementById("search").value.toUpperCase();
+        let table = document.getElementById("company-list");
+        let rows = table.getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+            let td = rows[i].getElementsByTagName("td")[1];
+            if (td) {
+                let textValue = td.textContent || td.innerText;
+                rows[i].style.display = textValue.toUpperCase().includes(input) ? "" : "none";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
