@@ -155,22 +155,27 @@
                 document.getElementById('profilePic').src = user.photoURL || '../user_icon.png';
                 document.getElementById('userEmailNav').textContent = user.email;
             } else {
-                window.location.href = '../../index.html';
+                window.location.href = '../../index.html'; // Redirect to homepage if not logged in
             }
         }
 
         // Check if user is signed in
         auth.onAuthStateChanged(user => displayUserInfo(user));
 
-        // Sign out functionality
+        // Sign out functionality with confirmation
         function signOut() {
-            auth.signOut().then(() => {
-                window.location.href = '../../index.html';
-            }).catch(error => {
-                console.error('Error signing out: ', error);
-            });
+            if (confirm("Are you sure you want to sign out?")) {
+                auth.signOut().then(() => {
+                    window.location.href = '../../index.html'; // Redirect to homepage after logout
+                }).catch(error => {
+                    console.error('Error signing out: ', error);
+                });
+            } else {
+                console.log("Sign out cancelled.");
+            }
         }
 
+        // Add sign out button event listener after page loads
         window.onload = () => {
             document.getElementById('signOutButton').addEventListener('click', signOut);
         };
@@ -184,7 +189,7 @@
         <a href="../homepage1.html">Home</a>
         <a href="../profile.html">Profile</a>
         <a href="analysis.html">Analysis</a>
-        <a href="#">News</a>
+        <a href="csv/nse.html">News</a>
     </div>
     <div class="profile-info">
         <!-- Profile Pic -->
@@ -215,11 +220,11 @@
             <tr><td>4</td><td><a href="comapany_list/ultratech_cement.html">UltraTech Cement Ltd.</a></td></tr>
             <tr><td>5</td><td><a href="comapany_list/relience.html">Reliance Industries Ltd.</a></td></tr>
             <tr><td>6</td><td><a href="comapany_list/l&t.html">Larsen & Toubro Ltd.</a></td></tr>
-            <tr><td>7</td><td><a href="comapany_list/kotak_bank.html">Kotak Mahindra bank Ltd.</a></td></tr>
+            <tr><td>7</td><td><a href="comapany_list/kotak_bank.html">Kotak Mahindra Bank Ltd.</a></td></tr>
             <tr><td>9</td><td><a href="comapany_list/itc.html">ITC Ltd.</a></td></tr>
             <tr><td>10</td><td><a href="comapany_list/infosys.html">Infosys Ltd.</a></td></tr>
-            <tr><td>11</td><td><a href="comapany_list/hdfc.html">HDFC Bank Ltd. </a></td></tr>
-            <tr><td>12</td><td><a href="comapany_list/airtel.html"> Bharti Airtel Ltd.</a></td></tr>
+            <tr><td>11</td><td><a href="comapany_list/hdfc.html">HDFC Bank Ltd.</a></td></tr>
+            <tr><td>12</td><td><a href="comapany_list/airtel.html">Bharti Airtel Ltd.</a></td></tr>
         </tbody>
     </table>
 </main>
@@ -230,6 +235,7 @@
 </footer>
 
 <script>
+    // Search functionality to filter company names in the table
     function searchTable() {
         let input = document.getElementById("search").value.toUpperCase();
         let table = document.getElementById("company-list");
