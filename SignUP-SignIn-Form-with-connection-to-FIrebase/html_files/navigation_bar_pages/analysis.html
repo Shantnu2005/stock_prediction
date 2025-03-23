@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,13 +12,13 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #0f172a;
+            color: #e2e8f0;
         }
 
         /* Header */
         header {
-            background-color: #007bff;
+            background-color: #1e40af;
             color: white;
             padding: 20px;
             text-align: center;
@@ -25,13 +26,13 @@
 
         header h1 {
             margin: 0;
-            font-size: 2.5em;
+            font-size: 2.2em;
         }
 
         /* Navigation Bar */
         nav {
-            background-color: #0056b3;
-            padding: 10px;
+            background-color: #1e3a8a;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -41,12 +42,13 @@
             color: white;
             text-decoration: none;
             font-size: 1.1em;
-            padding: 10px;
+            padding: 8px 12px;
+            transition: background-color 0.3s ease-in-out;
         }
 
         nav a:hover {
-            background-color: #003f7f;
-            border-radius: 5px;
+            background-color: #374151;
+            border-radius: 6px;
         }
 
         /* Profile Info */
@@ -54,13 +56,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: white;
         }
 
         .profile-info img {
             border-radius: 50%;
             width: 35px;
             height: 35px;
+            border: 2px solid #1e40af;
         }
 
         /* Main Section */
@@ -68,57 +70,77 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 80vh;
             flex-direction: column;
-            padding: 20px;
+            padding: 40px 20px;
+            padding-bottom: 80px;
         }
 
-        /* Footer */
-        footer {
-            background-color: #007bff;
-            color: white;
+        /* Fixed Header Section */
+        .fixed-header {
+            position: sticky;
+            top: 0;
+            background-color: #0f172a;
+            padding: 20px 0;
+            z-index: 1000;
+            width: 100%;
             text-align: center;
-            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        footer p {
-            margin: 0;
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #60a5fa;
         }
 
         /* Search Box */
-        input {
+        .search-container {
             width: 50%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            margin: 0 auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            background-color: #1e293b;
+            color: #e2e8f0;
             font-size: 1em;
+        }
+
+        input:focus {
+            outline: 2px solid #60a5fa;
         }
 
         /* Table */
         table {
-            width: 50%;
+            width: 60%;
             border-collapse: collapse;
-            background-color: #1e1e1e;
-            color: white;
+            background-color: #1e293b;
+            color: #e2e8f0;
             border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
-        th, td {
-            padding: 12px;
+        th,
+        td {
+            padding: 14px;
             text-align: left;
-            border-bottom: 1px solid #444;
+            border-bottom: 1px solid #374151;
         }
 
         th {
-            background-color: #007bff;
+            background-color: #2563eb;
             color: white;
         }
 
         td a {
-            color: white;
+            color: #60a5fa;
             text-decoration: none;
+            font-weight: bold;
         }
 
         td a:hover {
@@ -126,7 +148,39 @@
         }
 
         tr:hover {
-            background-color: #333;
+            background-color: #374151;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        /* Fixed Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1e40af;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* Sign Out Button */
+        #signOutButton {
+            background-color: #ef4444;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #signOutButton:hover {
+            background-color: #dc2626;
         }
     </style>
 
@@ -155,23 +209,21 @@
                 document.getElementById('profilePic').src = user.photoURL || '../user_icon.png';
                 document.getElementById('userEmailNav').textContent = user.email;
             } else {
-                window.location.href = '../../index.html'; // Redirect to homepage if not logged in
+                window.location.href = '../../index.html'; // Redirect if not logged in
             }
         }
 
         // Check if user is signed in
         auth.onAuthStateChanged(user => displayUserInfo(user));
 
-        // Sign out functionality with confirmation
+        // Sign out functionality
         function signOut() {
             if (confirm("Are you sure you want to sign out?")) {
                 auth.signOut().then(() => {
-                    window.location.href = '../../index.html'; // Redirect to homepage after logout
+                    window.location.href = '../../index.html';
                 }).catch(error => {
                     console.error('Error signing out: ', error);
                 });
-            } else {
-                console.log("Sign out cancelled.");
             }
         }
 
@@ -181,75 +233,82 @@
         };
     </script>
 </head>
+
 <body>
 
-<!-- Navigation Bar -->
-<nav>
-    <div>
-        <a href="../homepage1.html">Home</a>
-        <a href="../profile.html">Profile</a>
-        <a href="analysis.html">Analysis</a>
-        <a href="csv/nse.html">News</a>
-    </div>
-    <div class="profile-info">
-        <!-- Profile Pic -->
-        <img id="profilePic" src="default-avatar.png" alt="Profile Picture">
-        <!-- User Email -->
-        <span id="userEmailNav"></span>
-        <!-- Sign Out Button -->
-        <a href="javascript:void(0)" id="signOutButton">Sign Out</a>
-    </div>
-</nav>
+    <!-- Navigation Bar -->
+    <nav>
+        <div>
+            <a href="../homepage1.html">Home</a>      
+            <a href="analysis.html">Analysis</a>
+            <a href="stock_prediction.html">Stock Prediction</a>
+            <a href="csv/nse.html">News</a>
+            <a href="profile.html">Profile</a>
+        </div>
+        <div class="profile-info">
+            <img id="profilePic" src="default-avatar.png" alt="Profile Picture">
+            <span id="userEmailNav"></span>
+            <a href="javascript:void(0)" id="signOutButton">Sign Out</a>
+        </div>
+    </nav>
 
-<!-- Main Content -->
-<main>
-    <h1>List of Companies</h1>
-    <input type="text" id="search" onkeyup="searchTable()" placeholder="Search for companies...">
+    <!-- Main Content -->
+    <main>
+        <!-- Fixed Header Section -->
+        <div class="fixed-header">
+            <h1>List of Companies</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Sr.No</th>
-                <th>Company Name</th>
-            </tr>
-        </thead>
-        <tbody id="company-list">
-            <tr><td>1</td><td><a href="comapany_list/tata_moters.html">Tata Motors Ltd.</a></td></tr>
-            <tr><td>2</td><td><a href="comapany_list/nestle_india.html">Nestle India Ltd.</a></td></tr>
-            <tr><td>3</td><td><a href="comapany_list/tata_steel.html">Tata Steel Ltd.</a></td></tr>
-            <tr><td>4</td><td><a href="comapany_list/ultratech_cement.html">UltraTech Cement Ltd.</a></td></tr>
-            <tr><td>5</td><td><a href="comapany_list/relience.html">Reliance Industries Ltd.</a></td></tr>
-            <tr><td>6</td><td><a href="comapany_list/l&t.html">Larsen & Toubro Ltd.</a></td></tr>
-            <tr><td>7</td><td><a href="comapany_list/kotak_bank.html">Kotak Mahindra Bank Ltd.</a></td></tr>
-            <tr><td>9</td><td><a href="comapany_list/itc.html">ITC Ltd.</a></td></tr>
-            <tr><td>10</td><td><a href="comapany_list/infosys.html">Infosys Ltd.</a></td></tr>
-            <tr><td>11</td><td><a href="comapany_list/hdfc.html">HDFC Bank Ltd.</a></td></tr>
-            <tr><td>12</td><td><a href="comapany_list/airtel.html">Bharti Airtel Ltd.</a></td></tr>
-        </tbody>
-    </table>
-</main>
+            <!-- Fixed Search Bar -->
+            <div class="search-container">
+                <input type="text" id="search" onkeyup="searchTable()" placeholder="🔎 Search for companies...">
+            </div>
+        </div>
 
-<!-- Footer -->
-<footer>
-    <p>&copy; 2025 Company Analysis. All rights reserved.</p>
-</footer>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Company Name</th>
+                </tr>
+            </thead>
+            <tbody id="company-list">
+                <tr><td>1</td><td><a href="company_list/tata_motors.html">Tata Motors Ltd.</a></td></tr>
+                <tr><td>2</td><td><a href="company_list/nestle_india.html">Nestle India Ltd.</a></td></tr>
+                <tr><td>3</td><td><a href="company_list/tata_steel.html">Tata Steel Ltd.</a></td></tr>
+                <tr><td>4</td><td><a href="company_list/ultratech_cement.html">UltraTech Cement Ltd.</a></td></tr>
+                <tr><td>5</td><td><a href="company_list/reliance.html">Reliance Industries Ltd.</a></td></tr>
+                <tr><td>6</td><td><a href="company_list/l&t.html">Larsen & Toubro Ltd.</a></td></tr>
+                <tr><td>7</td><td><a href="company_list/kotak_bank.html">Kotak Mahindra Bank Ltd.</a></td></tr>
+                <tr><td>8</td><td><a href="company_list/itc.html">ITC Ltd.</a></td></tr>
+                <tr><td>9</td><td><a href="company_list/infosys.html">Infosys Ltd.</a></td></tr>
+                <tr><td>10</td><td><a href="company_list/hdfc.html">HDFC Bank Ltd.</a></td></tr>
+                <tr><td>11</td><td><a href="company_list/airtel.html">Bharti Airtel Ltd.</a></td></tr>
+            </tbody>
+        </table>
+    </main>
 
-<script>
-    // Search functionality to filter company names in the table
-    function searchTable() {
-        let input = document.getElementById("search").value.toUpperCase();
-        let table = document.getElementById("company-list");
-        let rows = table.getElementsByTagName("tr");
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Company Analysis. All rights reserved.</p>
+    </footer>
 
-        for (let i = 0; i < rows.length; i++) {
-            let td = rows[i].getElementsByTagName("td")[1];
-            if (td) {
-                let textValue = td.textContent || td.innerText;
-                rows[i].style.display = textValue.toUpperCase().includes(input) ? "" : "none";
+    <script>
+        // Search functionality to filter company names in the table
+        function searchTable() {
+            let input = document.getElementById("search").value.toUpperCase();
+            let table = document.getElementById("company-list");
+            let rows = table.getElementsByTagName("tr");
+
+            for (let i = 0; i < rows.length; i++) {
+                let td = rows[i].getElementsByTagName("td")[1];
+                if (td) {
+                    let textValue = td.textContent || td.innerText;
+                    rows[i].style.display = textValue.toUpperCase().includes(input) ? "" : "none";
+                }
             }
         }
-    }
-</script>
+    </script>
 
 </body>
+
 </html>

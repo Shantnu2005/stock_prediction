@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Table - Modern Dark Theme</title>
     <style>
+        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
@@ -13,11 +15,15 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #0f172a;
+            color: #e2e8f0;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
+        /* Header */
         .header {
             display: flex;
             align-items: center;
@@ -27,17 +33,17 @@
 
         .back-button {
             padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.1);
+            background: #1e3a8a;
             color: #fff;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            transition: background 0.3s;
+            transition: background 0.3s ease;
         }
 
         .back-button:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: #2563eb;
         }
 
         .title {
@@ -45,8 +51,41 @@
             font-weight: bold;
             text-align: center;
             flex-grow: 1;
+            color: #60a5fa;
         }
 
+        /* Search Container */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #searchInput {
+            width: 60%;
+            padding: 12px 15px;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background-color: #1e293b;
+            color: #e2e8f0;
+            font-size: 1em;
+        }
+
+        #searchInput:focus {
+            outline: 2px solid #60a5fa;
+        }
+
+        #columnFilter {
+            padding: 12px;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background-color: #1e293b;
+            color: #e2e8f0;
+            font-size: 1em;
+        }
+
+        /* Table Container */
         .table-container {
             overflow-x: auto;
             border-radius: 12px;
@@ -54,8 +93,10 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             padding: 20px;
+            margin-bottom: 70px; /* Space for footer */
         }
 
+        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -64,14 +105,16 @@
             overflow: hidden;
         }
 
-        th, td {
+        th,
+        td {
             padding: 14px 16px;
             text-align: left;
-            color: #fff;
+            color: #e2e8f0;
+            border-bottom: 1px solid #374151;
         }
 
         th {
-            background: rgba(255, 255, 255, 0.1);
+            background: #1e3a8a;
             font-weight: bold;
         }
 
@@ -81,9 +124,10 @@
 
         tr:hover {
             background: rgba(255, 255, 255, 0.15);
-            transition: 0.3s;
+            transition: 0.3s ease;
         }
 
+        /* Limit cell width for large content */
         td:nth-child(4) {
             max-width: 500px;
             overflow: hidden;
@@ -94,14 +138,49 @@
         tr:hover td:nth-child(4) {
             white-space: normal;
         }
+
+        /* Footer */
+        footer {
+            background-color: #1e40af;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        footer p {
+            margin: 0;
+        }
     </style>
 </head>
+
 <body>
+
+    <!-- Header -->
     <div class="header">
         <button class="back-button" onclick="window.history.back()">← Back</button>
         <div class="title">News</div>
     </div>
-    
+
+    <!-- Search Container -->
+    <div class="search-container">
+        <select id="columnFilter">
+            <option value="all">All Columns</option>
+            <option value="0">Symbol</option>
+            <option value="1">Company</option>
+            <option value="2">Purpose</option>
+            <option value="3">Details</option>
+            <option value="4">Date</option>
+        </select>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="🔎 Search...">
+    </div>
+
+    <!-- Table Container -->
     <div class="table-container">
         <table id="dataTable">
             <thead>
@@ -121,27 +200,34 @@
         </table>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Company Analysis. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Fetching Data & Search -->
     <script>
+        // Fetch CSV Data and Populate Table
         async function fetchData() {
             const tableBody = document.getElementById('tableBody');
-            
+
             try {
                 const response = await fetch('CF-Event-equities-09-Feb-2025.csv');
-                
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch CSV file');
                 }
 
                 const csvText = await response.text();
                 const rows = csvText.split('\n');
-                tableBody.innerHTML = ''; 
+                tableBody.innerHTML = ''; // Clear loading state
 
-                for(let i = 1; i < rows.length; i++) {
-                    if(rows[i].trim() === '') continue; 
-                    
+                for (let i = 1; i < rows.length; i++) {
+                    if (rows[i].trim() === '') continue;
+
                     const row = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-                    if(!row) continue;
-                    
+                    if (!row) continue;
+
                     const tr = document.createElement('tr');
                     row.forEach(cell => {
                         const td = document.createElement('td');
@@ -160,7 +246,44 @@
             }
         }
 
+        // Search Functionality with Column Filter
+        function searchTable() {
+            let input = document.getElementById("searchInput").value.toUpperCase();
+            let filterColumn = document.getElementById("columnFilter").value;
+            let table = document.getElementById("dataTable");
+            let rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) {
+                let tdArray = rows[i].getElementsByTagName("td");
+                let rowMatch = false;
+
+                if (filterColumn === "all") {
+                    // Search all columns
+                    for (let j = 0; j < tdArray.length; j++) {
+                        if (tdArray[j]) {
+                            let textValue = tdArray[j].textContent || tdArray[j].innerText;
+                            if (textValue.toUpperCase().includes(input)) {
+                                rowMatch = true;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    // Search in specific column
+                    let columnIndex = parseInt(filterColumn);
+                    let textValue = tdArray[columnIndex].textContent || tdArray[columnIndex].innerText;
+                    if (textValue.toUpperCase().includes(input)) {
+                        rowMatch = true;
+                    }
+                }
+
+                rows[i].style.display = rowMatch ? "" : "none";
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', fetchData);
     </script>
+
 </body>
+
 </html>

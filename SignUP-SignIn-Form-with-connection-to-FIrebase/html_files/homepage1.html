@@ -12,7 +12,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #121212;
+            background-color:#0f172a;
             color: #ffffff;
         }
 
@@ -31,8 +31,8 @@
 
         /* Navigation Bar */
         nav {
-            background-color: #0056b3;
-            padding: 10px;
+            background-color: #1e3a8a;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -48,7 +48,7 @@
         }
 
         nav a:hover {
-            background-color: #003f7f;
+            background-color: #374151;
             border-radius: 5px;
         }
 
@@ -139,6 +139,18 @@
             background: transparent;
             z-index: 10;
         }
+        #signOutButton {
+            background-color: #ef4444;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #signOutButton:hover {
+            background-color: #dc2626;
+        }
     </style>
 
     <script type="module">
@@ -199,9 +211,11 @@
     <nav>
         <div>
             <a href="#">Home</a>
-            <a href="#">Profile</a>
             <a href="navigation_bar_pages/analysis.html">Analysis</a>
+            <a href="navigation_bar_pages/stock_prediction.html">Stock Prediction</a>
             <a href="navigation_bar_pages/csv/nse.html">News</a>
+            <a href="navigation_bar_pages/profile.html">Profile</a>
+            
         </div>
         <div class="profile-info">
             <!-- Profile Pic -->
@@ -214,7 +228,7 @@
     </nav>
 
     <!-- Financial Dashboard Title -->
-    <h1>Financial Dashboard</h1>
+    <h1 style="text-align: center; font-weight: bold;">Financial Dashboard</h1>
 
     <!-- Dashboard Widgets -->
     <div class="container">
