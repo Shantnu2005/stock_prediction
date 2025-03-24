@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L&T Stock Prediction Visualizer</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- CSS Styles -->
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #4a90e2, #50c9c3);
+            color: #ffffff;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        .btn-back {
+            background-color: #f0f0f0;
+            color: #1e3a8a;
+        }
+
+        .btn-back:hover {
+            background-color: #00bcd4;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .theme-toggle {
+            background-color: #f0f0f0;
+            color: #1e3a8a;
+        }
+
+        .theme-toggle:hover {
+            background-color: #040808;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Chart Container with Glassmorphism */
+        #chart-container {
+            width: 95%;
+            max-width: 1400px;
+            height: 85vh;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Light Theme */
+        body.light-mode {
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            color: #333;
+        }
+
+        body.light-mode .navbar,
+        body.light-mode footer {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3a8a;
+        }
+
+        body.light-mode #chart-container {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .btn {
+            background-color: #1e3a8a;
+            color: #ffffff;
+        }
+
+        body.light-mode .btn:hover {
+            background-color: #00bcd4;
+            color: #fff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #chart-container {
+                height: 70vh;
+                padding: 10px;
+            }
+
+            .navbar h1 {
+                font-size: 1.4rem;
+            }
+
+            .btn {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <button class="btn btn-back" onclick="goBack()">⬅️ Back</button>
+        <h1>L&T Stock Prediction Visualizer</h1>
+        <button class="btn theme-toggle" onclick="toggleTheme()">Switch Theme</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Chart Container -->
+        <div id="chart-container">
+            <div id="chart" style="width: 100%; height: 100%;"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 L&T Stock Prediction Visualizer. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        // Go Back to Previous Page
+        function goBack() {
+            window.history.back(); // Redirect to the previous page
+        }
+
+        // CSV Path
+        const CSV_PATH = 'L&T.csv'; // Path to the CSV file
+
+        // Load and process CSV data
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch(CSV_PATH);
+                if (!response.ok) throw new Error('CSV file not found');
+                const csvData = await response.text();
+                processDataAndRender(csvData);
+            } catch (error) {
+                console.error('Error:', error);
+                alert(`Failed to load data: ${error.message}`);
+            }
+        });
+
+        // Process CSV and prepare data for chart
+        function processDataAndRender(csvText) {
+            const lines = csvText.split('\n').filter(line => line.trim() !== '');
+            const headers = lines.shift().split(',');
+
+            const traces = {
+                actualTrain: { x: [], y: [], name: 'Actual (Train)', mode: 'lines+markers', line: { color: '#1f77b4' } },
+                predictedTrain: { x: [], y: [], name: 'Predicted (Train)', mode: 'lines', line: { color: '#ff7f0e' } },
+                actualTest: { x: [], y: [], name: 'Actual (Test)', mode: 'lines+markers', line: { color: '#2ca02c' } },
+                predictedTest: { x: [], y: [], name: 'Predicted (Test)', mode: 'lines', line: { color: '#d62728' } }
+            };
+
+            lines.forEach(line => {
+                const [date, actual, predicted, type] = line.split(',');
+                const numActual = parseFloat(actual);
+                const numPredicted = parseFloat(predicted);
+
+                const collection = type === 'Train' ? 'Train' : 'Test';
+                traces[`actual${collection}`].x.push(date);
+                traces[`actual${collection}`].y.push(numActual);
+                traces[`predicted${collection}`].x.push(date);
+                traces[`predicted${collection}`].y.push(numPredicted);
+            });
+
+            renderChart(Object.values(traces));
+        }
+
+        // Render Chart with High Graphics
+        function renderChart(data) {
+            const layout = {
+                title: {
+                    text: 'L&T Stock Price Analysis 📈',
+                    font: { size: 24, color: '#ffffff' }
+                },
+                xaxis: {
+                    title: '<b>Date</b>',
+                    titlefont: { size: 16, color: '#000' },
+                    tickfont: { size: 12, color: '#000' },
+                    type: 'date',
+                    rangeslider: { visible: true },
+                },
+                yaxis: {
+                    title: '<b>Price</b>',
+                    titlefont: { size: 16, color: '#000' },
+                    tickfont: { size: 12, color: '#000' },
+                    gridcolor: '#e0e0e0'
+                },
+                plot_bgcolor: 'rgba(0,0,0,0.1)',
+                paper_bgcolor: 'rgba(255,255,255,0)',
+                showlegend: true,
+                legend: { orientation: 'h', y: -0.2 },
+                hovermode: 'x unified',
+                dragmode: 'pan',
+                margin: { t: 50, b: 60, l: 50, r: 50 },
+                transition: {
+                    duration: 500,
+                    easing: 'cubic-in-out'
+                }
+            };
+
+            Plotly.newPlot('chart', data, layout, { responsive: true });
+        }
+    </script>
+</body>
+
+</html>
